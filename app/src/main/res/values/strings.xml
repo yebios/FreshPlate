@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FreshPlate</string>
+    <string name="bottom_nav_pantry">Pantry</string>
+    <string name="bottom_nav_recipes">Recipes</string>
+    <string name="bottom_nav_shoppingList">Shopping List</string>
+    <string name="quantity_format">Quantity: %d</string>
+</resources>
