@@ -101,8 +101,7 @@ public class RecipesViewModel extends AndroidViewModel{
 
             // (!! 检查所有食材，包括已拥有的和缺失的)
             List<Ingredient> allIngredients = new ArrayList<>();
-            if (recipe.getUsedIngredients() != null) allIngredients.addAll(recipe.getUsedIngredients());
-            if (recipe.getMissedIngredients() != null) allIngredients.addAll(recipe.getMissedIngredients());
+            if (recipe.getIngredients() != null) allIngredients.addAll(recipe.getIngredients());
 
             for (Ingredient ingredient : allIngredients) {
                 // 检查这个食材是否在我们的储藏室中

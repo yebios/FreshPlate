@@ -26,5 +26,9 @@ public class PantryItem {
         this.quantity = quantity;
         this.expirationDate = expirationDate;
     }
+
+    public String getName() {
+        return name;
+    }
 }
 

@@ -3,6 +3,7 @@ package com.example.freshplate.data.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.freshplate.data.model.Recipe;
+import com.example.freshplate.data.model.RecipeResponse; // (!! 更改)
 import com.example.freshplate.data.remote.ApiClient;
 import com.example.freshplate.data.remote.RecipeApiService;
 import java.util.List;
@@ -25,20 +26,22 @@ public class RecipeRepository {
     public LiveData<List<Recipe>> searchRecipes(String ingredientsQuery) {
         MutableLiveData<List<Recipe>> data = new MutableLiveData<>();
 
-        apiService.searchRecipesByIngredients(API_KEY, ingredientsQuery, 20, 2) // 获取20个，并最小化缺失食材
-                .enqueue(new Callback<List<Recipe>>() {
+        // (!! 更改) 调用 complexSearch
+        apiService.complexSearch(API_KEY, ingredientsQuery, 20, true, true, 2)
+                .enqueue(new Callback<RecipeResponse>() { // (!! 更改) 期望 RecipeResponse
                     @Override
-                    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                    public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            data.setValue(response.body());
+                            // (!! 更改) 从包装类中提取列表
+                            data.setValue(response.body().getRecipes());
                         } else {
-                            data.setValue(null); // API 错误
+                            data.setValue(null);
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                        data.setValue(null); // 网络错误
+                    public void onFailure(Call<RecipeResponse> call, Throwable t) {
+                        data.setValue(null);
                     }
                 });
         return data;

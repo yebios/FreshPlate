@@ -10,4 +10,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="scan_barcode">Scan Barcode</string>
+    <string name="expired">Expired</string>
+    <string name="soon">Soon</string>
+    <string name="fresh">Fresh</string>
 </resources>

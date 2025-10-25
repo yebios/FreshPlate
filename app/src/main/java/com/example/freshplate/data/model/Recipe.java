@@ -16,13 +16,16 @@ public class Recipe {
     @SerializedName("image")
     private String imageUrl;
 
-    // (!! 关键) Spoonacular 会告诉我们哪些食材匹配了
-    @SerializedName("usedIngredients")
-    private List<Ingredient> usedIngredients;
+    // (!! 关键) complexSearch 在设置 addRecipeInformation=true 时会返回这些字段
+    @SerializedName("summary")
+    private String description; // 描述
 
-    // (!! 关键) 以及我们还缺哪些食材
-    @SerializedName("missedIngredients")
-    private List<Ingredient> missedIngredients;
+    @SerializedName("readyInMinutes")
+    private int cookingTime; // 烹饪时间 (分钟)
+
+    // (!! 更改) complexSearch 返回的是这个字段
+    @SerializedName("extendedIngredients")
+    private List<Ingredient> ingredients;
 
     // (!! 瞬态字段) 这是一个非 API 字段，用于在 ViewModel 中进行排序
     // transient 关键字告诉 Gson 和 Room (如果使用) 忽略此字段
@@ -32,8 +35,11 @@ public class Recipe {
     public int getId() { return id; }
     public String getTitle() { return title; }
     public String getImageUrl() { return imageUrl; }
-    public List<Ingredient> getUsedIngredients() { return usedIngredients; }
-    public List<Ingredient> getMissedIngredients() { return missedIngredients; }
+    public List<Ingredient> getIngredients() { return ingredients; }
+
+    // (!! 关键) 添加回这两个 Getter
+    public String getDescription() { return description; }
+    public String getCookingTimeString() { return cookingTime + " min"; }
 
     // --- 用于排序的 Getter/Setter ---
     public void setSoonestExpirationDate(LocalDate date) {
