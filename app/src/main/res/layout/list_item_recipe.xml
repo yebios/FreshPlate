@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="recipe"
+            type="com.example.freshplate.data.model.Recipe" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_recipe_image"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{recipe.imageUrl}"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tv_recipe_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{recipe.title}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    tools:text="Mediterranean Quinoa Salad" />
+
+                <TextView
+                    android:id="@+id/tv_recipe_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{recipe.description}"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    tools:text="A refreshing salad with quinoa, cucumbers, tomatoes, and feta cheese." />
+
+                <TextView
+                    android:id="@+id/tv_recipe_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:text="@{recipe.cookingTimeString}"
+                    app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
+                    tools:text="30 min" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
