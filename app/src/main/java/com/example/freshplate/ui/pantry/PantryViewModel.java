@@ -60,7 +60,7 @@ public class PantryViewModel extends AndroidViewModel {
         String lowerCaseQuery = query.toLowerCase(Locale.getDefault());
 
         for (PantryItem item : currentItems) {
-            if (item.name.toLowerCase(Locale.getDefault()).contains(lowerCaseQuery)) {
+            if (item.name != null && item.name.toLowerCase(Locale.getDefault()).contains(lowerCaseQuery)) {
                 filteredList.add(item);
             }
         }

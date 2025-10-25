@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity(tableName = "shopping_list_items")
 public class ShoppingItem {
@@ -18,11 +17,12 @@ public class ShoppingItem {
 
     public String name;
 
-    // (!! 关键) 用于跟踪复选框的状态 [cite: 30]
+    // (!! 关键) 用于跟踪复选框的状态
     public boolean isBought;
 
-    public ShoppingItem(String trim, boolean b) {
-        this.name = trim;
-        this.isBought = b;
+    // 自定义构造函数用于创建新项目（不包含 id）
+    public ShoppingItem(String name, boolean isBought) {
+        this.name = name;
+        this.isBought = isBought;
     }
 }

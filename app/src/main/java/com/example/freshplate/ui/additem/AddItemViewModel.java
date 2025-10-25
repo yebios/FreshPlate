@@ -63,11 +63,13 @@ public class AddItemViewModel extends AndroidViewModel {
     // 由 fragment_add_item.xml 中的 "Save" 按钮调用
     public void onSaveClicked() {
         // 1. 数据验证
-        if (itemName.getValue() == null || itemName.getValue().trim().isEmpty()) {
+        String nameValue = itemName.getValue();
+        if (nameValue == null || nameValue.trim().isEmpty()) {
             _toastMessage.setValue("Please enter an item name");
             return;
         }
-        if (quantity.getValue() == null || quantity.getValue().trim().isEmpty()) {
+        String quantityValue = quantity.getValue();
+        if (quantityValue == null || quantityValue.trim().isEmpty()) {
             _toastMessage.setValue("Please enter a quantity");
             return;
         }
@@ -76,10 +78,10 @@ public class AddItemViewModel extends AndroidViewModel {
             return;
         }
 
-        String name = itemName.getValue();
+        String name = nameValue.trim();
         int qty;
         try {
-            qty = Integer.parseInt(quantity.getValue());
+            qty = Integer.parseInt(quantityValue.trim());
         } catch (NumberFormatException e) {
             _toastMessage.setValue("Please enter a valid quantity");
             return;

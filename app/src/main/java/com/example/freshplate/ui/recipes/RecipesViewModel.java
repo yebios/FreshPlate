@@ -30,7 +30,7 @@ public class RecipesViewModel extends AndroidViewModel{
     private final MediatorLiveData<List<Recipe>> sortedRecipeList = new MediatorLiveData<>();
 
     public RecipesViewModel(@NonNull Application application) {
-        super();
+        super(application);
         pantryRepository = new PantryRepository(application);
         recipeRepository = new RecipeRepository();
 
@@ -91,7 +91,9 @@ public class RecipesViewModel extends AndroidViewModel{
         // 1. 创建一个储藏室物品的快速查找表 (名称 -> 过期日期)
         Map<String, LocalDate> pantryMap = new HashMap<>();
         for (PantryItem item : pantryItems) {
-            pantryMap.put(item.name.toLowerCase(), item.expirationDate);
+            if (item.name != null) {
+                pantryMap.put(item.name.toLowerCase(), item.expirationDate);
+            }
         }
 
         // 2. 遍历 API 返回的食谱，计算它们的 "最紧急日期"
@@ -105,12 +107,15 @@ public class RecipesViewModel extends AndroidViewModel{
 
             for (Ingredient ingredient : allIngredients) {
                 // 检查这个食材是否在我们的储藏室中
-                LocalDate expirationDate = pantryMap.get(ingredient.getName().toLowerCase());
-                if (expirationDate != null) {
-                    hasPantryIngredient = true;
-                    // 如果是，检查它是否是迄今为止最快过期的
-                    if (expirationDate.isBefore(soonestDate)) {
-                        soonestDate = expirationDate;
+                String ingredientName = ingredient.getName();
+                if (ingredientName != null) {
+                    LocalDate expirationDate = pantryMap.get(ingredientName.toLowerCase());
+                    if (expirationDate != null) {
+                        hasPantryIngredient = true;
+                        // 如果是，检查它是否是迄今为止最快过期的
+                        if (expirationDate.isBefore(soonestDate)) {
+                            soonestDate = expirationDate;
+                        }
                     }
                 }
             }
