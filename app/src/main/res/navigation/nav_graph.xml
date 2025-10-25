@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/pantryFragment">
+
+    <fragment
+        android:id="@+id/pantryFragment"
+        android:name="com.example.freshplate.ui.pantry.PantryFragment"
+        android:label="Pantry"
+        tools:layout="@layout/fragment_pantry">
+
+        <action
+            android:id="@+id/action_pantryFragment_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipesFragment"
+        android:name="com.example.freshplate.ui.recipes.RecipesFragment"
+        android:label="Recipes"
+        tools:layout="@layout/fragment_recipes" />
+
+    <fragment
+        android:id="@+id/shoppingListFragment"
+        android:name="com.example.freshplate.ui.shopping.ShoppingListFragment"
+        android:label="Shopping List"
+        tools:layout="@layout/fragment_shopping_list" />
+
+    <fragment
+        android:id="@+id/addItemFragment"
+        android:name="com.example.freshplate.ui.additem.AddItemFragment"
+        android:label="Add Item"
+        tools:layout="@layout/fragment_add_item" />
+
+</navigation>

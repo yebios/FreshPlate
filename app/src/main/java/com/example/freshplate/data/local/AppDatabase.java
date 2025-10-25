@@ -18,12 +18,13 @@ import java.util.concurrent.Executors;
  * - version: 数据库版本号。每次你修改了表的结构，都必须增加这个数字。
  * - TypeConverters: 注册我们创建的 Converters.java 类，以便 Room 知道如何处理 Date 类型。
  */
-@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 1, exportSchema = false)
+@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     // 1. 让数据库知道你的 DAO 接口
     public abstract PantryItemDao pantryItemDao();
+    public abstract ShoppingItemDao shoppingItemDao();
 
     // 2. (单例) 创建一个 volatile 实例，确保所有线程都能看到最新的实例
     private static volatile AppDatabase INSTANCE;
