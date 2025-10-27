@@ -26,7 +26,8 @@ public class ShoppingListFragment extends Fragment {
 
         // 2. 将 ViewModel 绑定到 XML (用于底部的 EditText 和 Button)
         binding.setViewModel(viewModel);
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+        // 延后到 onViewCreated 设置 LifecycleOwner
+        // binding.setLifecycleOwner(getViewLifecycleOwner());
 
         // 3. 设置 Adapter (将 viewModel 传入)
         adapter = new ShoppingListAdapter(viewModel);
@@ -39,6 +40,8 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // 现在视图已创建，安全设置 LifecycleOwner
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         // 4. 观察列表数据
         viewModel.getAllItems().observe(getViewLifecycleOwner(), items -> {
@@ -46,5 +49,12 @@ public class ShoppingListFragment extends Fragment {
                 adapter.submitList(items);
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 防止内存泄漏
+        binding = null;
     }
 }

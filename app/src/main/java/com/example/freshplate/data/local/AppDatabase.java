@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  * - version: 数据库版本号。每次你修改了表的结构，都必须增加这个数字。
  * - TypeConverters: 注册我们创建的 Converters.java 类，以便 Room 知道如何处理 Date 类型。
  */
-@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 2, exportSchema = false)
+@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -50,6 +50,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     // 创建数据库实例
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "freshplate_database")
+                            // 开发阶段：若 schema 改动导致版本不匹配，直接重建数据库以避免崩溃
+                            .fallbackToDestructiveMigration()
                             // .addCallback(sRoomDatabaseCallback) // (可选) 添加回调
                             .build();
                 }

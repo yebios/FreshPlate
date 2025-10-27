@@ -1,16 +1,12 @@
 package com.example.freshplate.data.model;
 
 import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity(tableName = "pantry_items")
 public class PantryItem {
 
@@ -27,8 +23,5 @@ public class PantryItem {
         this.expirationDate = expirationDate;
     }
 
-    public String getName() {
-        return name;
-    }
 }
 

@@ -32,6 +32,12 @@
         android:id="@+id/addItemFragment"
         android:name="com.example.freshplate.ui.additem.AddItemFragment"
         android:label="Add Item"
-        tools:layout="@layout/fragment_add_item" />
+        tools:layout="@layout/fragment_add_item">
+
+        <argument
+            android:name="itemId"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+    </fragment>
 
 </navigation>

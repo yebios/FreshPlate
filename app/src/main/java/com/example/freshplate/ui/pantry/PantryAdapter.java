@@ -3,7 +3,6 @@ package com.example.freshplate.ui.pantry;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +19,10 @@ import java.util.Objects;
  * 它使用 ListAdapter，通过 DiffUtil 在后台线程上自动计算列表差异。
  */
 public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryViewHolder> {
+
+    // (!! 新增) 点击监听器接口
+    private OnItemClickListener listener;
+
     /**
      * 构造函数。
      */
@@ -32,7 +35,7 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
      * 以及它们的内容是否发生了变化。
      */
     private static final DiffUtil.ItemCallback<PantryItem> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<PantryItem>() {
+            new DiffUtil.ItemCallback<>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull PantryItem oldItem, @NonNull PantryItem newItem) {
                     // 检查唯一 ID
@@ -55,7 +58,8 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
         // (!! 关键) 使用 Data Binding 来填充布局
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ListItemPantryBinding binding = ListItemPantryBinding.inflate(inflater, parent, false);
-        return new PantryViewHolder(binding);
+
+        return new PantryViewHolder(binding, listener);
     }
 
     @Override
@@ -74,9 +78,22 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
         // 持有自动生成的 Data Binding 类的实例
         private final ListItemPantryBinding binding;
 
-        public PantryViewHolder(@NonNull ListItemPantryBinding binding) {
+        public PantryViewHolder(@NonNull ListItemPantryBinding binding, OnItemClickListener listener) {
             super(binding.getRoot());
             this.binding = binding;
+
+            // 设置点击监听器
+            binding.getRoot().setOnClickListener(v -> {
+                int position = getBindingAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    // 需要从适配器获取item，所以我们需要通过其他方式传递
+                    // 这里我们存储当前绑定的item
+                    PantryItem item = binding.getItem();
+                    if (item != null) {
+                        listener.onItemClick(item);
+                    }
+                }
+            });
         }
 
         /**
@@ -90,4 +107,14 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
             binding.executePendingBindings();
         }
     }
+    // (!! 新增) 监听器接口
+    public interface OnItemClickListener {
+        void onItemClick(PantryItem item);
+    }
+
+    // (!! 新增) 设置监听器的方法
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
 }

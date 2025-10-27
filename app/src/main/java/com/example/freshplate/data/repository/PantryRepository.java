@@ -3,8 +3,6 @@ package com.example.freshplate.data.repository;
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 // (你需要先创建 AppDatabase.java，这里假设你已经创建了)
 import com.example.freshplate.data.local.AppDatabase;
@@ -13,9 +11,13 @@ import com.example.freshplate.data.model.PantryItem;
 
 public class PantryRepository {
     private PantryItemDao pantryItemDao;
+
+    // 从 DAO 向 ViewModel 暴露 LiveData
     private LiveData<List<PantryItem>> allItems;
-    private static final ExecutorService databaseWriteExecutor =
-            Executors.newSingleThreadExecutor();
+
+    public LiveData<List<PantryItem>> getAllItems() {
+        return allItems;
+    }
 
     // (使用 Application 来获取数据库实例)
     public PantryRepository(Application application) {
@@ -24,14 +26,28 @@ public class PantryRepository {
         allItems = pantryItemDao.getAllItems();
     }
 
-    // 从 DAO 向 ViewModel 暴露 LiveData
-    public LiveData<List<PantryItem>> getAllItems() {
-        return allItems;
-    }
     // 数据库操作必须在后台线程上执行
     public void insert(PantryItem item) {
-        databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             pantryItemDao.insert(item);
         });
     }
+
+    // update 和 delet
+    public void update(PantryItem item) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            pantryItemDao.update(item);
+        });
+    }
+
+    public void delete(PantryItem item) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            pantryItemDao.delete(item);
+        });
+    }
+
+    public LiveData<PantryItem> getItemById(int itemId) {
+        return pantryItemDao.getItemById(itemId);
+    }
+
 }

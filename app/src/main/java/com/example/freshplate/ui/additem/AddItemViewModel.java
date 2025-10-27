@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.data.repository.PantryRepository;
 
@@ -54,10 +56,43 @@ public class AddItemViewModel extends AndroidViewModel {
         return _toastMessage;
     }
 
+    // (!! 新增) 保存正在编辑的物品的 ID
+    private final MutableLiveData<Integer> itemId = new MutableLiveData<>();
+
+    // (!! 新增) 标记我们是处于添加模式还是编辑模式
+    private boolean isEditMode = false;
+
+    // (!! 新增) 当处于编辑模式时，从数据库加载物品
+    // 确保永远不为 null，避免 Fragment 调用 observe 时 NPE
+    private LiveData<PantryItem> loadedItem = new MutableLiveData<>(null);
+
+
     // (你需要通过 ViewModelFactory 或 Hilt 注入 repository)
     public AddItemViewModel(@NonNull Application application) {
         super(application);
         this.repository = new PantryRepository(application);
+
+        // (!! 关键) Transformations.switchMap
+        // 当 itemId 发生变化时，根据是否为编辑模式选择数据源
+        loadedItem = Transformations.switchMap(itemId, id -> {
+            if (id != null && id != -1) {
+                return repository.getItemById(id);
+            }
+            // 添加模式：返回一个空的 LiveData
+            return new MutableLiveData<>(null);
+        });
+    }
+
+    // (!! 新增) 由 AddItemFragment 调用
+    public void start(int id) {
+        // 根据传入的 id 决定是否为编辑模式
+        isEditMode = id != -1;
+        itemId.setValue(id);
+    }
+
+    // (!! 新增) 由 AddItemFragment 调用，用于填充表单
+    public LiveData<PantryItem> getLoadedItem() {
+        return loadedItem;
     }
 
     // 由 fragment_add_item.xml 中的 "Save" 按钮调用
@@ -82,19 +117,52 @@ public class AddItemViewModel extends AndroidViewModel {
         int qty;
         try {
             qty = Integer.parseInt(quantityValue.trim());
+            // (!! 关键) 根据模式决定是更新还是插入
+            if (isEditMode) {
+                // 我们需要原始的 ID
+                PantryItem itemToUpdate = loadedItem.getValue();
+                if (itemToUpdate != null) {
+                    itemToUpdate.name = name;
+                    itemToUpdate.quantity = qty;
+                    itemToUpdate.expirationDate = selectedExpirationDate;
+                    repository.update(itemToUpdate);
+                }
+            } else {
+                // 2. 创建PantryItem对象
+                PantryItem newItem = new PantryItem(name, qty, selectedExpirationDate);
+                // 3. 调用仓库保存
+                repository.insert(newItem);
+            }
         } catch (NumberFormatException e) {
             _toastMessage.setValue("Please enter a valid quantity");
             return;
         }
 
-        // 2. 创建PantryItem对象
-        PantryItem newItem = new PantryItem(name, qty, selectedExpirationDate);
-
-        // 3. 调用仓库保存
-        repository.insert(newItem);
-
         // 4. 通知 Fragment 导航回上一个界面
         _navigateBack.setValue(true);
+    }
+
+    // (!! 更改) 当我们从数据库加载物品时，填充字段
+    public void populateFields(PantryItem item) {
+        if (item != null) {
+            itemName.setValue(item.name);
+            quantity.setValue(String.valueOf(item.quantity));
+            // (!! 关键) 我们必须同时设置 String 和 LocalDate
+            onDateSelected(item.expirationDate);
+        }
+    }
+
+    // (!! 更改) onDateSelected 现在有两个用途
+    public void onDateSelected(LocalDate date) {
+        this.selectedExpirationDate = date;
+        expirationDateString.setValue(this.selectedExpirationDate.format(dateFormatter));
+    }
+
+    // (!! 更改) onDateSelected (来自 DatePicker)
+    public void onDateSelected(Long selection) {
+        Instant instant = Instant.ofEpochMilli(selection);
+        LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
+        onDateSelected(date); // 调用我们的新方法
     }
 
     /**
@@ -118,21 +186,6 @@ public class AddItemViewModel extends AndroidViewModel {
      */
     public void onSelectDateClicked() {
         _showDatePicker.setValue(true);
-    }
-    /**
-     * (!! 关键更改) 当 DatePicker 选择完成时，由 Fragment 调用
-     * @param selection 选定的日期，以 UTC 毫秒时间戳 (Long) 形式
-     */
-    public void onDateSelected(Long selection) {
-        // 1. 将毫秒时间戳 (Long) 转换为 Instant (时间线上的一个点)
-        Instant instant = Instant.ofEpochMilli(selection);
-
-        // 2. (核心) 将该 Instant 转换为 UTC 时区的 LocalDate
-        // MaterialDatePicker 返回的是 UTC 日期的 00:00 时刻
-        this.selectedExpirationDate = instant.atZone(ZoneId.of("UTC")).toLocalDate();
-
-        // 3. 格式化日期以便在 UI 上显示
-        expirationDateString.setValue(this.selectedExpirationDate.format(dateFormatter));
     }
 
     /**

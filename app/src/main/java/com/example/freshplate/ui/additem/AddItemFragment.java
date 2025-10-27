@@ -20,9 +20,14 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import com.example.freshplate.databinding.FragmentAddItemBinding;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import androidx.lifecycle.Observer; // (!! 导入)
+import com.example.freshplate.data.model.PantryItem; // (!! 导入)
+
 public class AddItemFragment extends Fragment {
 
     private AddItemViewModel viewModel;
+    // 将 binding 提升为成员变量，便于在 onViewCreated 设置 LifecycleOwner，并在 onDestroyView 释放
+    private FragmentAddItemBinding binding;
 
     // (!! 新增) 现代的方式来处理 Activity 结果 (例如, 扫描)
     // 我们在这里注册 "ScanContract" (来自 Zxing 库)
@@ -40,7 +45,7 @@ public class AddItemFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // 1. 使用 Data Binding 填充布局
-        FragmentAddItemBinding binding = FragmentAddItemBinding.inflate(inflater, container, false);
+        binding = FragmentAddItemBinding.inflate(inflater, container, false);
 
         // 2. 获取 ViewModel (你需要设置 ViewModelFactory)
         viewModel = new ViewModelProvider(this).get(AddItemViewModel.class);
@@ -48,8 +53,8 @@ public class AddItemFragment extends Fragment {
         // 3. 将 ViewModel 绑定到 XML
         binding.setViewModel(viewModel);
 
-        // 4. 设置 LifecycleOwner 以便 LiveData 能够自动更新 XML
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+        // 4. 注意：不要在此处调用 getViewLifecycleOwner()，否则可能导致闪退
+        // binding.setLifecycleOwner(getViewLifecycleOwner());
 
         return binding.getRoot();
     }
@@ -58,8 +63,41 @@ public class AddItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // 现在视图已创建，安全地设置 LifecycleOwner
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        // (!! 关键) 从导航参数中获取 itemId
+        int itemId = -1;
+        if (getArguments() != null) {
+            // 使用传统的 Bundle 方式获取参数
+            itemId = getArguments().getInt("itemId", -1);
+        }
+
+        // (!! 关键) 启动 ViewModel 并传入 ID
+        viewModel.start(itemId);
+
+        // (!! 关键) 观察从数据库加载的物品
+        viewModel.getLoadedItem().observe(getViewLifecycleOwner(), new Observer<>() {
+            @Override
+            public void onChanged(PantryItem item) {
+                if (item != null) {
+                    viewModel.populateFields(item);
+                    // (!! 关键) 移除观察者，这样旋转屏幕时
+                    // 不会用旧数据覆盖用户的新输入
+                    viewModel.getLoadedItem().removeObserver(this);
+                }
+            }
+        });
+
         // 5. 设置所有 LiveData 观察者
         setupObservers();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 防止内存泄漏
+        binding = null;
     }
 
     /**

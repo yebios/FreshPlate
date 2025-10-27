@@ -22,11 +22,14 @@ public interface PantryItemDao {
     @Insert
     void insert(PantryItem item);
 
+    // (!! 新增) 用于编辑功能，获取单个物品
+    @Query("SELECT * FROM pantry_items WHERE id = :itemId")
+    LiveData<PantryItem> getItemById(int itemId);
 
-    // (你以后会需要)
-    // @Update
-    // void update(PantryItem item);
+    //
+     @Update
+     void update(PantryItem item);
 
-    // @Delete
-    // void delete(PantryItem item);
+     @Delete
+     void delete(PantryItem item);
 }

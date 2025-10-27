@@ -25,6 +25,12 @@ public class PantryViewModel extends AndroidViewModel {
     // 这是最终的 已过滤 列表，Fragment 将观察这个
     private final MediatorLiveData<List<PantryItem>> filteredPantryItems = new MediatorLiveData<>();
 
+    // 用于撤销删除
+    private final MutableLiveData<PantryItem> _itemToDelete = new MutableLiveData<>();
+    public LiveData<PantryItem> getItemToDelete() {
+        return _itemToDelete;
+    }
+
     public PantryViewModel(@NonNull Application application) {
         super(application);
         this.repository = new PantryRepository(application);
@@ -80,4 +86,26 @@ public class PantryViewModel extends AndroidViewModel {
     public LiveData<Boolean> getNavigateToAddItemEvent() { return _navigateToAddItem; }
     public void onAddItemClicked() { _navigateToAddItem.setValue(true); }
     public void onAddItemNavigated() { _navigateToAddItem.setValue(false); }
+
+    /**
+     * (!! 新增) 当用户滑动一个物品时由 Fragment 调用
+     */
+    public void deleteItem(PantryItem item) {
+        // 我们不立即删除，而是先触发一个事件，让 Fragment 显示 Snackbar
+        _itemToDelete.setValue(item);
+        // 在后台线程中执行删除
+        repository.delete(item);
+    }
+
+    /**
+     * (!! 新增) 当用户点击 Snackbar 上的 "Undo" 按钮时调用
+     */
+    public void undoDelete(PantryItem item) {
+        // 将物品重新插入数据库
+        repository.insert(item);
+    }
+
+    public void deleteEventHandled() {
+        _itemToDelete.setValue(null);
+    }
 }
