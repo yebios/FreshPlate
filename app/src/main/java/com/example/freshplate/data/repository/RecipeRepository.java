@@ -3,6 +3,7 @@ package com.example.freshplate.data.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.freshplate.data.model.Recipe;
+import com.example.freshplate.data.model.RecipeDetail;
 import com.example.freshplate.data.model.RecipeResponse; // (!! 更改)
 import com.example.freshplate.data.remote.ApiClient;
 import com.example.freshplate.data.remote.RecipeApiService;
@@ -26,7 +27,7 @@ public class RecipeRepository {
     public LiveData<List<Recipe>> searchRecipes(String ingredientsQuery) {
         MutableLiveData<List<Recipe>> data = new MutableLiveData<>();
 
-        // (!! 更改) 调用 complexSearch
+        // 调用 complexSearch
         apiService.complexSearch(API_KEY, ingredientsQuery, 20, true, true, 2)
                 .enqueue(new Callback<RecipeResponse>() { // (!! 更改) 期望 RecipeResponse
                     @Override
@@ -42,6 +43,31 @@ public class RecipeRepository {
                     @Override
                     public void onFailure(Call<RecipeResponse> call, Throwable t) {
                         data.setValue(null);
+                    }
+                });
+        return data;
+    }
+
+    /**
+     * (!! 新增) 异步从 API 获取单个食谱的详细信息
+     */
+    public LiveData<RecipeDetail> getRecipeDetails(int recipeId) {
+        MutableLiveData<RecipeDetail> data = new MutableLiveData<>();
+
+        apiService.getRecipeInformation(recipeId, API_KEY, false) // false = 不需要营养信息
+                .enqueue(new Callback<RecipeDetail>() {
+                    @Override
+                    public void onResponse(Call<RecipeDetail> call, Response<RecipeDetail> response) {
+                        if (response.isSuccessful()) {
+                            data.setValue(response.body());
+                        } else {
+                            data.setValue(null); // API 错误
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RecipeDetail> call, Throwable t) {
+                        data.setValue(null); // 网络错误
                     }
                 });
         return data;

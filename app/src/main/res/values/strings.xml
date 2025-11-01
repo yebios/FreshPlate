@@ -13,4 +13,5 @@
     <string name="expired">Expired</string>
     <string name="soon">Soon</string>
     <string name="fresh">Fresh</string>
+    <string name="do_the_first_step_of_the_recipe">Do the first step of the recipe</string>
 </resources>

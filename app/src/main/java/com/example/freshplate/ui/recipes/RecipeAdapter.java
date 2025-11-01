@@ -12,6 +12,18 @@ import com.example.freshplate.databinding.ListItemRecipeBinding; // (自动生�
 import java.util.Objects;
 
 public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewHolder> {
+
+    // 点击监听器接口
+    public interface OnItemClickListener {
+        void onItemClick(Recipe recipe);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     public RecipeAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -42,6 +54,12 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         holder.bind(getItem(position));
+        holder.itemView.setOnClickListener(v -> {
+            int pos = holder.getBindingAdapterPosition();
+            if (listener != null && pos != RecyclerView.NO_POSITION) {
+                listener.onItemClick(getItem(pos));
+            }
+        });
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {

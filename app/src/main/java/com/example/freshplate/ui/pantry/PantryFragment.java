@@ -61,7 +61,7 @@ public class PantryFragment extends Fragment {
             }
         });
 
-        // (!! 新增) 观察 "item to delete" 事件，用于显示 Undo Snackbar
+        // (!! 新增) 观察 "item to delete" 事件，用于显示 Undo Snack bar
         viewModel.getItemToDelete().observe(getViewLifecycleOwner(), item -> {
             if (item != null) {
                 showUndoSnackbar(item);
@@ -115,7 +115,7 @@ public class PantryFragment extends Fragment {
     }
 
     /**
-     * (!! 新增) 显示一个带有 "Undo" 按钮的 Snackbar
+     * (!! 新增) 显示一个带有 "Undo" 按钮的 Snack bar
      */
     private void showUndoSnackbar(PantryItem item) {
         Snackbar.make(binding.getRoot(), "Deleted " + item.name, Snackbar.LENGTH_LONG)

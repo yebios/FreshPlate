@@ -1,9 +1,11 @@
 package com.example.freshplate.data.remote;
 
 
+import com.example.freshplate.data.model.RecipeDetail;
 import com.example.freshplate.data.model.RecipeResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RecipeApiService {
@@ -26,5 +28,17 @@ public interface RecipeApiService {
             @Query("addRecipeInformation") boolean addRecipeInformation,
             @Query("fillIngredients") boolean fillIngredients,
             @Query("ranking") int ranking
+    );
+
+    /**
+     * (!! 新增) 根据 ID 获取完整的食谱信息
+     * @param recipeId   食谱的 ID
+     * @param apiKey     你的 API 密钥
+     */
+    @GET("recipes/{id}/information")
+    Call<RecipeDetail> getRecipeInformation(
+            @Path("id") int recipeId,
+            @Query("apiKey") String apiKey,
+            @Query("includeNutrition") boolean includeNutrition
     );
 }
