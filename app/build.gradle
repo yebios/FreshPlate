@@ -40,6 +40,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1' // 用于 RecyclerView 列表
     implementation 'androidx.core:core-ktx:1.8.0'
+    // Replace BlurView coordinates to JitPack form
+    implementation 'com.github.Dimezis:BlurView:version-2.0.3'
 
     // --- 架构 (MVVM) - ViewModel 和 LiveData ---
     def lifecycle_version = "2.5.1"

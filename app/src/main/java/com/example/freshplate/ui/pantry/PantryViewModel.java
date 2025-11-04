@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.data.repository.PantryRepository;
 
@@ -86,7 +86,6 @@ public class PantryViewModel extends AndroidViewModel {
     public LiveData<Boolean> getNavigateToAddItemEvent() { return _navigateToAddItem; }
     public void onAddItemClicked() { _navigateToAddItem.setValue(true); }
     public void onAddItemNavigated() { _navigateToAddItem.setValue(false); }
-
     /**
      * (!! 新增) 当用户滑动一个物品时由 Fragment 调用
      */

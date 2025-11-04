@@ -3,6 +3,8 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        // Add JitPack for plugins if ever needed
+        maven { url 'https://jitpack.io' }
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +12,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Add JitPack to resolve libraries published via GitHub (e.g., BlurView)
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "FreshPlate"

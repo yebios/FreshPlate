@@ -1,15 +1,24 @@
 package com.example.freshplate.ui.recipes.detail;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.freshplate.databinding.FragmentRecipeDetailBinding;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderEffectBlur;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class RecipeDetailFragment extends Fragment {
 
@@ -65,6 +74,9 @@ public class RecipeDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // 初始化 Blur 背景
+        setupBlur();
+
         // 观察 ViewModel
         viewModel.getRecipeDetails().observe(getViewLifecycleOwner(), recipeDetail -> {
             if (recipeDetail != null) {
@@ -86,5 +98,26 @@ public class RecipeDetailFragment extends Fragment {
                 instructionAdapter.setSteps(java.util.Collections.emptyList());
             }
         });
+    }
+
+    private void setupBlur() {
+        if (binding == null) return;
+        BlurView blurView = binding.blurView;
+        if (blurView == null) return;
+        View decorView = requireActivity().getWindow().getDecorView();
+        ViewGroup rootView = decorView.findViewById(android.R.id.content);
+        Drawable windowBackground = decorView.getBackground();
+        float radius = 20f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            blurView.setupWith(rootView, new RenderEffectBlur())
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        } else {
+            blurView.setupWith(rootView, new RenderScriptBlur(requireContext()))
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        }
     }
 }

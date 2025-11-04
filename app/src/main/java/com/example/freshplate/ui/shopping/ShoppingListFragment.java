@@ -1,15 +1,24 @@
 package com.example.freshplate.ui.shopping;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.example.freshplate.databinding.FragmentShoppingListBinding; // 自动生成的
+
+import com.example.freshplate.databinding.FragmentShoppingListBinding;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderEffectBlur;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class ShoppingListFragment extends Fragment {
 
@@ -43,12 +52,36 @@ public class ShoppingListFragment extends Fragment {
         // 现在视图已创建，安全设置 LifecycleOwner
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
+        // 初始化 Blur 背景
+        setupBlur();
+
         // 4. 观察列表数据
         viewModel.getAllItems().observe(getViewLifecycleOwner(), items -> {
             if (items != null) {
                 adapter.submitList(items);
             }
         });
+    }
+
+    private void setupBlur() {
+        if (binding == null) return;
+        BlurView blurView = binding.blurView;
+        if (blurView == null) return;
+        View decorView = requireActivity().getWindow().getDecorView();
+        ViewGroup rootView = decorView.findViewById(android.R.id.content);
+        Drawable windowBackground = decorView.getBackground();
+        float radius = 18f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            blurView.setupWith(rootView, new RenderEffectBlur())
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        } else {
+            blurView.setupWith(rootView, new RenderScriptBlur(requireContext()))
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        }
     }
 
     @Override

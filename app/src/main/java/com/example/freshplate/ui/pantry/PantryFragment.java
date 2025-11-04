@@ -1,21 +1,30 @@
 package com.example.freshplate.ui.pantry;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.freshplate.R;
 import com.example.freshplate.data.model.PantryItem;
-import com.example.freshplate.databinding.FragmentPantryBinding; // Data Binding 生成的类
-import androidx.recyclerview.widget.ItemTouchHelper; // (!! 导入)
-import androidx.recyclerview.widget.RecyclerView;    // (!! 导入)
-import com.google.android.material.snackbar.Snackbar; // (!! 导入)
+import com.example.freshplate.databinding.FragmentPantryBinding;
+import com.google.android.material.snackbar.Snackbar;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderEffectBlur;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class PantryFragment extends Fragment {
 
@@ -42,6 +51,9 @@ public class PantryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // 现在视图已创建，安全设置 LifecycleOwner
         binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        // 初始化 BlurView（在根内容之上模糊窗口背景）
+        setupBlurView();
 
         // 1. 设置 RecyclerView
         setupRecyclerView();
@@ -112,6 +124,27 @@ public class PantryFragment extends Fragment {
             }
         }).attachToRecyclerView(binding.rvPantryItems); // 将 "滑动" 功能附加到 RecyclerView;
 
+    }
+
+    private void setupBlurView() {
+        if (binding == null) return;
+        BlurView blurView = binding.blurView;
+        if (blurView == null) return;
+        View decorView = requireActivity().getWindow().getDecorView();
+        ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
+        Drawable windowBackground = decorView.getBackground();
+        float radius = 20f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            blurView.setupWith(rootView, new RenderEffectBlur())
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        } else {
+            blurView.setupWith(rootView, new RenderScriptBlur(requireContext()))
+                    .setFrameClearDrawable(windowBackground)
+                    .setBlurRadius(radius)
+                    .setOverlayColor(Color.parseColor("#33FFFFFF"));
+        }
     }
 
     /**

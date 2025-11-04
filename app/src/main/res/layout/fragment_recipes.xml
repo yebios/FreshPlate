@@ -14,15 +14,15 @@
         android:layout_height="match_parent"
         tools:context=".recipes.RecipesFragment">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar_recipes"
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurView"
             android:layout_width="0dp"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@android:drawable/ic_menu_revert"
-            app:title="Recipes" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:blurOverlayColor="#33FFFFFF" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recipes"
@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_recipes"
+            app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/list_item_recipe" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
