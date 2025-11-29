@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.freshplate'
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.freshplate"
         minSdk 26
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -86,4 +86,8 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
+    // WorkManager (过期提醒)
+    def work_version = "2.7.1"
+    implementation "androidx.work:work-runtime:$work_version"
 }

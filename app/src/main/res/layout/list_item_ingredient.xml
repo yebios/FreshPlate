@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_ingredient_name"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingTop="4dp"
     android:paddingBottom="4dp"
-    android:textAppearance="?attr/textAppearanceBody1"
-    android:drawablePadding="8dp"
-    android:text="1 cup Flour" />
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tv_ingredient_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:text="1 cup Flour" />
+
+    <ImageView
+        android:id="@+id/iv_add_to_shopping"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="Add to shopping list" />
+
+</LinearLayout>
+

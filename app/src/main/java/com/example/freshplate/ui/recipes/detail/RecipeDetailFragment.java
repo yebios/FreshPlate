@@ -1,5 +1,6 @@
 package com.example.freshplate.ui.recipes.detail;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -14,7 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.freshplate.R;
+import com.example.freshplate.data.model.Ingredient;
 import com.example.freshplate.databinding.FragmentRecipeDetailBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderEffectBlur;
@@ -50,7 +54,7 @@ public class RecipeDetailFragment extends Fragment {
         // 使用 Factory 来创建 ViewModel
         RecipeDetailViewModel.Factory factory =
                 new RecipeDetailViewModel.Factory(requireActivity().getApplication(), recipeId);
-        viewModel = new ViewModelProvider(getViewModelStore(), factory).get(RecipeDetailViewModel.class);
+        viewModel = new ViewModelProvider(this, factory).get(RecipeDetailViewModel.class);
 
         // 绑定 ViewModel 到布局
         binding.setViewModel(viewModel);
@@ -66,8 +70,32 @@ public class RecipeDetailFragment extends Fragment {
         ingredientAdapter = new IngredientAdapter();
         binding.rvIngredients.setAdapter(ingredientAdapter);
 
+        // 设置食材点击监听器
+        ingredientAdapter.setOnIngredientClickListener(this::showAddToShoppingListDialog);
+
         instructionAdapter = new InstructionAdapter();
         binding.rvInstructions.setAdapter(instructionAdapter);
+    }
+
+    /**
+     * 显示添加到购物清单的确认对话框
+     */
+    private void showAddToShoppingListDialog(Ingredient ingredient) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.add_to_shopping_list_title)
+                .setMessage(getString(R.string.add_to_shopping_list_message, ingredient.getName()))
+                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                    // 添加到购物清单
+                    viewModel.addIngredientToShoppingList(ingredient.getName());
+
+                    // 显示成功提示
+                    Snackbar.make(binding.getRoot(),
+                            getString(R.string.added_to_shopping_list, ingredient.getName()),
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     @Override

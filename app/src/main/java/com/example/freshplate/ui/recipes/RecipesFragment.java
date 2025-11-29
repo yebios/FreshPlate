@@ -31,7 +31,7 @@ public class RecipesFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // (!! 更改) 使用 Data Binding 填充
+        // 使用 Data Binding 填充
         binding = FragmentRecipesBinding.inflate(inflater, container, false);
 
         // 设置 Adapter 和 RecyclerView
@@ -43,7 +43,7 @@ public class RecipesFragment extends Fragment {
     private void setupRecyclerView() {
         adapter = new RecipeAdapter();
 
-        // (!! 关键) 在这里设置点击监听器
+        // 在这里设置点击监听器
         adapter.setOnItemClickListener(recipe -> {
             Bundle args = new Bundle();
             args.putInt("recipeId", recipe.getId());
@@ -64,13 +64,13 @@ public class RecipesFragment extends Fragment {
         // 初始化 BlurView
         setupBlur();
 
-        // (!! 关键) 观察 ViewModel 的最终结果
+        // 观察 ViewModel 的最终结果
         viewModel.getSortedRecipes().observe(getViewLifecycleOwner(), recipes -> {
             if (recipes != null) {
-                // (!! 你可以在这里添加逻辑：如果 recipes.isEmpty()，显示 "无食谱" 提示)
+                // 你可以在这里添加逻辑：如果 recipes.isEmpty()，显示 "无食谱" 提示
                 adapter.submitList(recipes);
             } else {
-                // (!! 处理 API 错误)
+                // 处理 API 错误
                 adapter.submitList(new ArrayList<>()); // 提交空列表
             }
         });

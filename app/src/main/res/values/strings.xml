@@ -14,4 +14,9 @@
     <string name="soon">Soon</string>
     <string name="fresh">Fresh</string>
     <string name="do_the_first_step_of_the_recipe">Do the first step of the recipe</string>
+    <string name="add_to_shopping_list">Add to Shopping List</string>
+    <string name="add_to_shopping_list_title">Add to Shopping List</string>
+    <string name="add_to_shopping_list_message">Add "%s" to your shopping list?</string>
+    <string name="confirm">Confirm</string>
+    <string name="added_to_shopping_list">"%s" added to shopping list</string>
 </resources>

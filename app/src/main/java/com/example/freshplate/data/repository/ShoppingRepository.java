@@ -25,10 +25,20 @@ public class ShoppingRepository {
         return allItems;
     }
 
-    // (!! 关键) 所有数据库写入操作都必须在后台线程上！
+    // 所有数据库写入操作都必须在后台线程上！
     public void insert(ShoppingItem item) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             shoppingItemDao.insert(item);
+        });
+    }
+
+    // 在 ShoppingRepository 中检查是否已存在
+    public void insertIfNotExists(String name) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            ShoppingItem existing = shoppingItemDao.getByName(name);
+            if (existing == null) {
+                shoppingItemDao.insert(new ShoppingItem(name, false));
+            }
         });
     }
 

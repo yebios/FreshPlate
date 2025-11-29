@@ -26,4 +26,7 @@ public interface ShoppingItemDao {
 
     @Delete
     void delete(ShoppingItem item);
+
+    @Query("select * from shopping_list_items where name = :name")
+    ShoppingItem getByName(String name);
 }

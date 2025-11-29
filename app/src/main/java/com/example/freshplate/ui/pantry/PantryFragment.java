@@ -5,12 +5,17 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -20,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.freshplate.R;
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.databinding.FragmentPantryBinding;
+import com.example.freshplate.util.ExpirationTestHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import eightbitlab.com.blurview.BlurView;
@@ -37,11 +43,6 @@ public class PantryFragment extends Fragment {
         binding = FragmentPantryBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(PantryViewModel.class);
         binding.setViewModel(viewModel);
-        // 延后到 onViewCreated 再设置 LifecycleOwner，避免过早访问导致崩溃
-        // binding.setLifecycleOwner(getViewLifecycleOwner());
-
-        // 将 RecyclerView 初始化移到 onViewCreated，确保视图层级稳定
-        // setupRecyclerView();
 
         return binding.getRoot();
     }
@@ -51,6 +52,23 @@ public class PantryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // 现在视图已创建，安全设置 LifecycleOwner
         binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        // 使用 MenuProvider 添加菜单
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.pantry_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_test_notification) {
+                    ExpirationTestHelper.triggerImmediateCheck(requireContext());
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         // 初始化 BlurView（在根内容之上模糊窗口背景）
         setupBlurView();

@@ -2,12 +2,14 @@ package com.example.freshplate.ui.recipes;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.freshplate.data.model.Recipe;
-import com.example.freshplate.databinding.ListItemRecipeBinding; // (自动生成)
+import com.example.freshplate.databinding.ListItemRecipeBinding;
 
 import java.util.Objects;
 
@@ -37,7 +39,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
 
                 @Override
                 public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
-                    // 比较标题和图片，这通常足够了
+                    // 比较标题和图片
                     return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                             Objects.equals(oldItem.getImageUrl(), newItem.getImageUrl());
                 }
