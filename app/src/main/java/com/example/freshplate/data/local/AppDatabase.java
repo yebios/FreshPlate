@@ -6,6 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.data.model.ShoppingItem;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors;
  * - version: 数据库版本号。每次你修改了表的结构，都必须增加这个数字。
  * - TypeConverters: 注册我们创建的 Converters.java 类，以便 Room 知道如何处理 Date 类型。
  */
-@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 3, exportSchema = false)
+@Database(entities = {PantryItem.class, ShoppingItem.class}, version = 4, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

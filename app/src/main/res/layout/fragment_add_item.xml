@@ -96,6 +96,18 @@
                 tools:text="2025-10-24" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cb_is_ingredient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Use for Recipes? (Ingredient)"
+            android:textSize="16sp"
+            android:checked="@={viewModel.isIngredient}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_expiration_date" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_scan_barcode"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -109,7 +121,7 @@
             app:icon="@android:drawable/ic_menu_camera"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_expiration_date" />
+            app:layout_constraintTop_toBottomOf="@id/cb_is_ingredient" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress_loading_product"

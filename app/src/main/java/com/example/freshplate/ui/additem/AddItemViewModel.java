@@ -33,6 +33,9 @@ public class AddItemViewModel extends AndroidViewModel {
     // 内部保存的日期，用于存入数据库
     private LocalDate selectedExpirationDate;
 
+    // 是否是食材
+    public final MutableLiveData<Boolean> isIngredient = new MutableLiveData<>(true);
+
 
     // 用于通知 Fragment 导航的 LiveData
     // (!! 更改) 用于通知 "保存" 或 "取消" 已完成，可以返回上一个界面
@@ -123,7 +126,7 @@ public class AddItemViewModel extends AndroidViewModel {
             _toastMessage.setValue("Please select an expiration date");
             return;
         }
-
+        boolean isIng = isIngredient.getValue() != null && isIngredient.getValue();
         String name = nameValue.trim();
         int qty;
         try {
@@ -136,11 +139,12 @@ public class AddItemViewModel extends AndroidViewModel {
                     itemToUpdate.name = name;
                     itemToUpdate.quantity = qty;
                     itemToUpdate.expirationDate = selectedExpirationDate;
+                    itemToUpdate.isIngredient = isIng;
                     repository.update(itemToUpdate);
                 }
             } else {
                 // 2. 创建PantryItem对象
-                PantryItem newItem = new PantryItem(name, qty, selectedExpirationDate);
+                PantryItem newItem = new PantryItem(name, qty, selectedExpirationDate, isIng);
                 // 3. 调用仓库保存
                 repository.insert(newItem);
             }
@@ -160,6 +164,7 @@ public class AddItemViewModel extends AndroidViewModel {
             quantity.setValue(String.valueOf(item.quantity));
             // (!! 关键) 我们必须同时设置 String 和 LocalDate
             onDateSelected(item.expirationDate);
+            isIngredient.setValue(item.isIngredient);
         }
     }
 

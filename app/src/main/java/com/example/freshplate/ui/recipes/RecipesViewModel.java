@@ -1,10 +1,12 @@
 package com.example.freshplate.ui.recipes;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
 import com.example.freshplate.data.model.Ingredient;
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.data.model.Recipe;
@@ -60,7 +62,31 @@ public class RecipesViewModel extends AndroidViewModel{
      * 步骤 1: 将储藏室物品转换为 API 查询
      */
     private void fetchAndSortRecipes(List<PantryItem> currentPantry) {
-        String ingredientsQuery = currentPantry.stream()
+        List<PantryItem> ingredientsOnly = currentPantry.stream()
+                .filter(item -> item.isIngredient) // 过滤掉零食
+                .collect(Collectors.toList());
+
+        // 2. 如果过滤后没有食材了，就不查了
+        if (ingredientsOnly.isEmpty()) {
+            sortedRecipeList.setValue(new ArrayList<>());
+            return;
+        }
+
+        // 3. (可选) 依然保留我们之前的优化：按过期时间排序并取前 N 个
+        // 这样可以避免发送太多数据给 API
+        Collections.sort(ingredientsOnly, (i1, i2) -> {
+            if (i1.expirationDate == null) return 1;
+            if (i2.expirationDate == null) return -1;
+            return i1.expirationDate.compareTo(i2.expirationDate);
+        });
+
+        // 假设限制前 10 个有效食材，提高 API 命中率
+        List<PantryItem> itemsToSend = ingredientsOnly.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        // 4. 构建查询字符串
+        String ingredientsQuery = itemsToSend.stream()
                 .map(PantryItem::getName)
                 .collect(Collectors.joining(","));
 
