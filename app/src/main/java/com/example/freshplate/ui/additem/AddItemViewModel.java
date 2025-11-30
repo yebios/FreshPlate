@@ -9,7 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.freshplate.data.model.PantryItem;
+import com.example.freshplate.data.model.ProductResponse;
 import com.example.freshplate.data.repository.PantryRepository;
+import com.example.freshplate.data.repository.ProductRepository;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import java.util.Locale;
 public class AddItemViewModel extends AndroidViewModel {
 
     private final PantryRepository repository;
+    private final ProductRepository productRepository;
     // 定义日期格式化
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
     // 用于 Data Binding 的公开字段
@@ -56,6 +59,13 @@ public class AddItemViewModel extends AndroidViewModel {
         return _toastMessage;
     }
 
+    // (!! 新增) 用于显示产品查询加载状态
+    private final MutableLiveData<Boolean> _isLoadingProduct = new MutableLiveData<>(false);
+    public final LiveData<Boolean> isLoadingProduct = _isLoadingProduct;
+    public LiveData<Boolean> getIsLoadingProduct() {
+        return _isLoadingProduct;
+    }
+
     // (!! 新增) 保存正在编辑的物品的 ID
     private final MutableLiveData<Integer> itemId = new MutableLiveData<>();
 
@@ -71,6 +81,7 @@ public class AddItemViewModel extends AndroidViewModel {
     public AddItemViewModel(@NonNull Application application) {
         super(application);
         this.repository = new PantryRepository(application);
+        this.productRepository = new ProductRepository();
 
         // (!! 关键) Transformations.switchMap
         // 当 itemId 发生变化时，根据是否为编辑模式选择数据源
@@ -189,19 +200,43 @@ public class AddItemViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 新增) 当条码扫描完成后，由 Fragment 调用
+     * (!! 更新) 当条码扫描完成后，由 Fragment 调用
      * @param barcodeResult 扫描到的条码
      */
     public void onBarcodeScanned(String barcodeResult) {
-        // TODO: 后续需通过该编码调用第三方 API 查询商品名称、价格等详细信息（条形码本身不存储这些信息，仅存储编码）
-        // 在这里，你可以调用一个网络 API (例如 OpenFoodFacts) 来根据条码获取产品名称
-        // (!! 伪代码)
-        // repository.fetchProductNameByBarcode(barcodeResult, (name) -> {
-        //    itemName.postValue(name); // postValue 因为这可能在后台线程
-        // });
+        // 显示加载状态
+        _isLoadingProduct.setValue(true);
 
-        // (!! 占位符) 现在，我们只把条码号填入名称中
-        itemName.setValue("Item: " + barcodeResult);
+        // 调用 OpenFoodFacts API 查询产品信息
+        productRepository.getProductByBarcode(barcodeResult, new ProductRepository.ProductCallback() {
+            @Override
+            public void onSuccess(ProductResponse productResponse) {
+                // 在主线程更新 UI
+                _isLoadingProduct.postValue(false);
+
+                // 自动填充产品名称
+                String productName = productResponse.product.getDisplayName();
+                itemName.postValue(productName);
+
+                // 显示成功消息
+                _toastMessage.postValue("Product found: " + productName);
+            }
+
+            @Override
+            public void onNotFound() {
+                _isLoadingProduct.postValue(false);
+                _toastMessage.postValue("Product not found in database. Please enter manually.");
+
+                // 可以选择将条码作为临时名称
+                itemName.postValue("Barcode: " + barcodeResult);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                _isLoadingProduct.postValue(false);
+                _toastMessage.postValue("Error: " + errorMessage);
+            }
+        });
     }
 
     // --- 事件重置方法 (防止重复触发) ---

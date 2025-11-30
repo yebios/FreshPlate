@@ -16,7 +16,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    // 自定义app名称
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "FreshPlate.apk"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false

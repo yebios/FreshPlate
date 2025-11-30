@@ -10,18 +10,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-// 条形码扫描
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
+import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.databinding.FragmentAddItemBinding;
 import com.google.android.material.datepicker.MaterialDatePicker;
-
-import androidx.lifecycle.Observer; // (!! 导入)
-import com.example.freshplate.data.model.PantryItem; // (!! 导入)
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 public class AddItemFragment extends Fragment {
 
@@ -137,6 +134,15 @@ public class AddItemFragment extends Fragment {
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 // 通知 ViewModel 事件已处理
                 viewModel.onToastShown();
+            }
+        });
+
+        // (!! 新增) 观察产品查询加载状态
+        viewModel.getIsLoadingProduct().observe(getViewLifecycleOwner(), isLoading -> {
+            // 在加载时禁用扫描按钮，防止重复请求
+            if (binding != null) {
+                binding.btnScanBarcode.setEnabled(!isLoading);
+                binding.btnScanBarcode.setText(isLoading ? "Loading..." : getString(com.example.freshplate.R.string.scan_barcode));
             }
         });
     }
