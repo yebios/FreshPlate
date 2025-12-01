@@ -3,7 +3,6 @@ package com.example.freshplate.data.model;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +16,7 @@ public class ShoppingItem {
 
     public String name;
 
-    // (!! 关键) 用于跟踪复选框的状态
+    // 用于跟踪复选框的状态
     public boolean isBought;
 
     // 自定义构造函数用于创建新项目（不包含 id）

@@ -91,7 +91,7 @@ public class PantryFragment extends Fragment {
             }
         });
 
-        // (!! 新增) 观察 "item to delete" 事件，用于显示 Undo Snack bar
+        // 观察 "item to delete" 事件，用于显示 Undo Snack bar
         viewModel.getItemToDelete().observe(getViewLifecycleOwner(), item -> {
             if (item != null) {
                 showUndoSnackbar(item);
@@ -110,7 +110,7 @@ public class PantryFragment extends Fragment {
     private void setupRecyclerView() {
         adapter = new PantryAdapter();
         adapter.setOnItemClickListener(item -> {
-            // (!! 关键) 点击物品时，导航到 AddItemFragment 并传递 ID
+            // 点击物品时，导航到 AddItemFragment 并传递 ID
             Bundle args = new Bundle();
             args.putInt("itemId", item.id);
             NavHostFragment.findNavController(this).navigate(
@@ -120,7 +120,7 @@ public class PantryFragment extends Fragment {
         });
         binding.rvPantryItems.setAdapter(adapter);
         binding.rvPantryItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        // (!! 关键) 在这里添加 ItemTouchHelper
+        // 在这里添加 ItemTouchHelper
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -137,7 +137,7 @@ public class PantryFragment extends Fragment {
                 int position = viewHolder.getBindingAdapterPosition();
                 PantryItem item = adapter.getCurrentList().get(position);
 
-                // 2. (!! 关键) 通知 ViewModel 删除物品
+                // 2. 通知 ViewModel 删除物品
                 viewModel.deleteItem(item);
             }
         }).attachToRecyclerView(binding.rvPantryItems); // 将 "滑动" 功能附加到 RecyclerView;
@@ -166,12 +166,12 @@ public class PantryFragment extends Fragment {
     }
 
     /**
-     * (!! 新增) 显示一个带有 "Undo" 按钮的 Snack bar
+     * 显示一个带有 "Undo" 按钮的 Snack bar
      */
     private void showUndoSnackbar(PantryItem item) {
         Snackbar.make(binding.getRoot(), "Deleted " + item.name, Snackbar.LENGTH_LONG)
                 .setAction("UNDO", v -> {
-                    // (!! 关键) 通知 ViewModel 撤销删除
+                    // 通知 ViewModel 撤销删除
                     viewModel.undoDelete(item);
                 })
                 .show();

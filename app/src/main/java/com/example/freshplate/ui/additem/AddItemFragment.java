@@ -26,8 +26,8 @@ public class AddItemFragment extends Fragment {
     // 将 binding 提升为成员变量，便于在 onViewCreated 设置 LifecycleOwner，并在 onDestroyView 释放
     private FragmentAddItemBinding binding;
 
-    // (!! 新增) 现代的方式来处理 Activity 结果 (例如, 扫描)
-    // 我们在这里注册 "ScanContract" (来自 Zxing 库)
+    // 处理 Activity 结果 (例如, 扫描)
+    // 注册 "ScanContract" (来自 Zxing 库)
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
@@ -50,9 +50,6 @@ public class AddItemFragment extends Fragment {
         // 3. 将 ViewModel 绑定到 XML
         binding.setViewModel(viewModel);
 
-        // 4. 注意：不要在此处调用 getViewLifecycleOwner()，否则可能导致闪退
-        // binding.setLifecycleOwner(getViewLifecycleOwner());
-
         return binding.getRoot();
     }
 
@@ -63,23 +60,23 @@ public class AddItemFragment extends Fragment {
         // 现在视图已创建，安全地设置 LifecycleOwner
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        // (!! 关键) 从导航参数中获取 itemId
+        // 从导航参数中获取 itemId
         int itemId = -1;
         if (getArguments() != null) {
             // 使用传统的 Bundle 方式获取参数
             itemId = getArguments().getInt("itemId", -1);
         }
 
-        // (!! 关键) 启动 ViewModel 并传入 ID
+        // 启动 ViewModel 并传入 ID
         viewModel.start(itemId);
 
-        // (!! 关键) 观察从数据库加载的物品
+        // 观察从数据库加载的物品
         viewModel.getLoadedItem().observe(getViewLifecycleOwner(), new Observer<>() {
             @Override
             public void onChanged(PantryItem item) {
                 if (item != null) {
                     viewModel.populateFields(item);
-                    // (!! 关键) 移除观察者，这样旋转屏幕时
+                    // 移除观察者，这样旋转屏幕时
                     // 不会用旧数据覆盖用户的新输入
                     viewModel.getLoadedItem().removeObserver(this);
                 }
@@ -137,7 +134,7 @@ public class AddItemFragment extends Fragment {
             }
         });
 
-        // (!! 新增) 观察产品查询加载状态
+        // 观察产品查询加载状态
         viewModel.getIsLoadingProduct().observe(getViewLifecycleOwner(), isLoading -> {
             // 在加载时禁用扫描按钮，防止重复请求
             if (binding != null) {
@@ -150,7 +147,7 @@ public class AddItemFragment extends Fragment {
 
 
     /**
-     * (!! 新增) 创建并显示 MaterialDatePicker 的方法
+     * 创建并显示 MaterialDatePicker 的方法
      */
     private void showDatePicker() {
         // 创建 DatePicker
@@ -161,13 +158,13 @@ public class AddItemFragment extends Fragment {
 
         // 侦听“确定”按钮点击
         datePicker.addOnPositiveButtonClickListener(selection -> {
-            // (!! 关键) 将用户选择的时间戳 (Long) 传回给 ViewModel
+            // 将用户选择的时间戳 (Long) 传回给 ViewModel
             viewModel.onDateSelected(selection);
         });
 
         // 侦听取消或关闭
         datePicker.addOnDismissListener(dialog -> {
-            // (!! 关键) 通知 ViewModel 选择器已关闭，重置事件
+            // 通知 ViewModel 选择器已关闭，重置事件
             viewModel.onDatePickerShown();
         });
 
@@ -179,7 +176,7 @@ public class AddItemFragment extends Fragment {
     }
 
     /**
-     * (!! 新增) 启动 Zxing 条码扫描器
+     * 启动 Zxing 条码扫描器
      */
     private void launchBarcodeScanner() {
         // 1. 创建一个配置对象
@@ -188,7 +185,7 @@ public class AddItemFragment extends Fragment {
         options.setPrompt("Scan a barcode");    // 在扫描界面底部显示提示文字
         options.setBeepEnabled(true);           // 扫描成功时播放“哔”声
         options.setOrientationLocked(false);    // 允许屏幕旋转
-        // 3. (!! 关键 !!) 告诉第1部分中准备好的 "发射器"：
+        // 3. 告诉第1部分中准备好的 "发射器"：
         barcodeLauncher.launch(options);
     }
 }

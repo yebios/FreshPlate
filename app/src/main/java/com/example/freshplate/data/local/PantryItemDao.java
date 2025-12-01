@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface PantryItemDao {
-    // (关键) 返回 LiveData，这样 UI 就可以自动更新
+    // 返回 LiveData，这样 UI 就可以自动更新
     @Query("SELECT * FROM pantry_items ORDER BY expirationDate ASC")
     LiveData<List<PantryItem>> getAllItems();
 
@@ -21,7 +21,7 @@ public interface PantryItemDao {
     @Insert
     void insert(PantryItem item);
 
-    // (!! 新增) 用于编辑功能，获取单个物品
+    // 用于编辑功能，获取单个物品
     @Query("SELECT * FROM pantry_items WHERE id = :itemId")
     LiveData<PantryItem> getItemById(int itemId);
 
@@ -32,9 +32,7 @@ public interface PantryItemDao {
      @Delete
      void delete(PantryItem item);
 
-    // (!! 新增) 查找在 today 和 threeDaysLater 之间过期的物品
-    // 注意：这里返回 List<PantryItem> 而不是 LiveData
-    // Room 会自动将 LocalDate 转换为 String 进行比较 (前提是你的 Converters 设置正确)
+    // 查找在 today 和 threeDaysLater 之间过期的物品
     @Query("SELECT * FROM pantry_items WHERE expirationDate >= :today AND expirationDate <= :threeDaysLater")
     List<PantryItem> getItemsExpiringBetween(String today, String threeDaysLater);
 }

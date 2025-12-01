@@ -72,8 +72,8 @@ public class RecipesViewModel extends AndroidViewModel{
             return;
         }
 
-        // 3. (可选) 依然保留我们之前的优化：按过期时间排序并取前 N 个
-        // 这样可以避免发送太多数据给 API
+        // 3. 按过期时间排序并取前 N 个
+        // 可以避免发送太多数据给 API
         Collections.sort(ingredientsOnly, (i1, i2) -> {
             if (i1.expirationDate == null) return 1;
             if (i2.expirationDate == null) return -1;
@@ -111,7 +111,7 @@ public class RecipesViewModel extends AndroidViewModel{
     }
 
     /**
-     * (!! 核心排序逻辑)
+     * 核心排序逻辑
      */
     private List<Recipe> sortRecipesByExpiration(List<Recipe> apiRecipes, List<PantryItem> pantryItems) {
         // 1. 创建一个储藏室物品的快速查找表 (名称 -> 过期日期)

@@ -39,7 +39,7 @@ public class RecipeDetailViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 关键) ViewModelFactory
+     * ViewModelFactory
      * 这是一个标准的模板，用于在创建 ViewModel 时向其传递参数 (例如 recipeId)
      */
     public static class Factory implements ViewModelProvider.Factory {

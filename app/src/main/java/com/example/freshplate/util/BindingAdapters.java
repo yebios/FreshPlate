@@ -8,7 +8,6 @@ import androidx.databinding.BindingAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-
 import com.example.freshplate.R;
 
 import java.time.LocalDate;
@@ -32,7 +31,6 @@ public class BindingAdapters {
         LocalDate today = LocalDate.now();
         long daysUntilExpired = ChronoUnit.DAYS.between(today, expirationDate);
 
-        // (你需要先在 res/values/colors.xml 中定义这些颜色)
         if (daysUntilExpired < 0) {
             // 已过期
             view.setText(R.string.expired);
@@ -49,8 +47,8 @@ public class BindingAdapters {
     }
 
     /**
-     * (!! 新增) 使用 Glide 从 URL 加载图片到 ImageView
-     * 允许我们在 XML 中使用 app:imageUrl="@{recipe.imageUrl}"
+     * 使用 Glide 从 URL 加载图片到 ImageView
+     * 允许在 XML 中使用 app:imageUrl="@{recipe.imageUrl}"
      */
     @BindingAdapter("imageUrl")
     public static void loadImage(ImageView view, String url) {
@@ -58,8 +56,8 @@ public class BindingAdapters {
             Glide.with(view.getContext())
                     .load(url)
                     .transition(DrawableTransitionOptions.withCrossFade()) // 淡入效果
-                    .placeholder(R.drawable.ic_placeholder) // (!! 创建一个占位图)
-                    .error(R.drawable.ic_error)         // (!! 创建一个错误图)
+                    .placeholder(R.drawable.ic_placeholder) // 创建一个占位图
+                    .error(R.drawable.ic_error)         // 创建一个错误图
                     .into(view);
         }
     }

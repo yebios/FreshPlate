@@ -1,6 +1,7 @@
 package com.example.freshplate.data.model;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -12,8 +13,6 @@ public class RecipeResponse {
 
     @SerializedName("number")
     private int number;
-
-    // ... (还有 offset, totalResults 等，但我们只需要 'results') ...
 
     public List<Recipe> getRecipes() {
         return recipes;

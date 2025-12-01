@@ -2,19 +2,22 @@ package com.example.freshplate.data.repository;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.freshplate.data.model.Recipe;
 import com.example.freshplate.data.model.RecipeDetail;
-import com.example.freshplate.data.model.RecipeResponse; // (!! 更改)
+import com.example.freshplate.data.model.RecipeResponse;
 import com.example.freshplate.data.remote.ApiClient;
 import com.example.freshplate.data.remote.RecipeApiService;
+
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RecipeRepository {
     private RecipeApiService apiService;
-    // (!! 在这里填入你的 API 密钥)
+
     private static final String API_KEY = "26ec70afc680434c8d2f08636dac4703";
 
     public RecipeRepository() {
@@ -29,11 +32,11 @@ public class RecipeRepository {
 
         // 调用 complexSearch
         apiService.complexSearch(API_KEY, ingredientsQuery, 20, true, true, 2)
-                .enqueue(new Callback<RecipeResponse>() { // (!! 更改) 期望 RecipeResponse
+                .enqueue(new Callback<RecipeResponse>() {
                     @Override
                     public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            // (!! 更改) 从包装类中提取列表
+                            // 从包装类中提取列表
                             data.setValue(response.body().getRecipes());
                         } else {
                             data.setValue(null);
@@ -49,7 +52,7 @@ public class RecipeRepository {
     }
 
     /**
-     * (!! 新增) 异步从 API 获取单个食谱的详细信息
+     *  异步从 API 获取单个食谱的详细信息
      */
     public LiveData<RecipeDetail> getRecipeDetails(int recipeId) {
         MutableLiveData<RecipeDetail> data = new MutableLiveData<>();

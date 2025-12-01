@@ -87,7 +87,7 @@ public class PantryViewModel extends AndroidViewModel {
     public void onAddItemClicked() { _navigateToAddItem.setValue(true); }
     public void onAddItemNavigated() { _navigateToAddItem.setValue(false); }
     /**
-     * (!! 新增) 当用户滑动一个物品时由 Fragment 调用
+     * 当用户滑动一个物品时由 Fragment 调用
      */
     public void deleteItem(PantryItem item) {
         // 我们不立即删除，而是先触发一个事件，让 Fragment 显示 Snackbar
@@ -97,7 +97,7 @@ public class PantryViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 新增) 当用户点击 Snackbar 上的 "Undo" 按钮时调用
+     * 当用户点击 Snackbar 上的 "Undo" 按钮时调用
      */
     public void undoDelete(PantryItem item) {
         // 将物品重新插入数据库

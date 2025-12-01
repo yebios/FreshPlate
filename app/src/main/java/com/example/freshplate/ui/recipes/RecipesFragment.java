@@ -67,7 +67,7 @@ public class RecipesFragment extends Fragment {
         // 观察 ViewModel 的最终结果
         viewModel.getSortedRecipes().observe(getViewLifecycleOwner(), recipes -> {
             if (recipes != null) {
-                // 你可以在这里添加逻辑：如果 recipes.isEmpty()，显示 "无食谱" 提示
+                // 如果 recipes.isEmpty()，显示 "无食谱" 提示
                 adapter.submitList(recipes);
             } else {
                 // 处理 API 错误

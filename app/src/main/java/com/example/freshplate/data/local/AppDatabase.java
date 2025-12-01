@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-    // 1. 让数据库知道你的 DAO 接口
+    // 1. DAO 接口
     public abstract PantryItemDao pantryItemDao();
     public abstract ShoppingItemDao shoppingItemDao();
 

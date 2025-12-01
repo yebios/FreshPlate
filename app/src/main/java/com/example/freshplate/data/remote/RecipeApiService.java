@@ -3,6 +3,7 @@ package com.example.freshplate.data.remote;
 
 import com.example.freshplate.data.model.RecipeDetail;
 import com.example.freshplate.data.model.RecipeResponse;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -31,7 +32,7 @@ public interface RecipeApiService {
     );
 
     /**
-     * (!! 新增) 根据 ID 获取完整的食谱信息
+     * 根据 ID 获取完整的食谱信息
      * @param recipeId   食谱的 ID
      * @param apiKey     你的 API 密钥
      */

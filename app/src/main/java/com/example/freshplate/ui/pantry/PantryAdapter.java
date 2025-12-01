@@ -3,14 +3,14 @@ package com.example.freshplate.ui.pantry;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.freshplate.data.model.PantryItem;
 import com.example.freshplate.databinding.ListItemPantryBinding;
-
-import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ import java.util.Objects;
  */
 public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryViewHolder> {
 
-    // (!! 新增) 点击监听器接口
+    // 点击监听器接口
     private OnItemClickListener listener;
 
     /**
@@ -55,7 +55,7 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
     @NonNull
     @Override
     public PantryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // (!! 关键) 使用 Data Binding 来填充布局
+        // 使用 Data Binding 来填充布局
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ListItemPantryBinding binding = ListItemPantryBinding.inflate(inflater, parent, false);
 
@@ -101,18 +101,18 @@ public class PantryAdapter extends ListAdapter<PantryItem, PantryAdapter.PantryV
          * @param item 要绑定的物品
          */
         public void bind(PantryItem item) {
-            // (!! 关键) 将 item 对象设置到 XML 布局中声明的 "item" 变量上
+            // 将 item 对象设置到 XML 布局中声明的 "item" 变量上
             binding.setItem(item);
             // 立即执行绑定，以避免 RecyclerView 闪烁
             binding.executePendingBindings();
         }
     }
-    // (!! 新增) 监听器接口
+    // 监听器接口
     public interface OnItemClickListener {
         void onItemClick(PantryItem item);
     }
 
-    // (!! 新增) 设置监听器的方法
+    // 设置监听器的方法
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }

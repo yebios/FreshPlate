@@ -17,7 +17,7 @@ public class ShoppingListViewModel extends AndroidViewModel {
     private final ShoppingRepository repository;
     private final LiveData<List<ShoppingItem>> allItems;
 
-    // (!! 关键) 用于和 fragment_shopping_list.xml 中的 EditText 双向数据绑定
+    // 用于和 fragment_shopping_list.xml 中的 EditText 双向数据绑定
     public final MutableLiveData<String> newItemName = new MutableLiveData<>("");
 
     public ShoppingListViewModel(@NonNull Application application) {
@@ -39,7 +39,7 @@ public class ShoppingListViewModel extends AndroidViewModel {
             ShoppingItem newItem = new ShoppingItem(name.trim(), false);
             repository.insert(newItem);
 
-            // (!! 关键) 添加后清空输入框
+            // 添加后清空输入框
             newItemName.setValue("");
         }
     }
@@ -52,7 +52,7 @@ public class ShoppingListViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 关键) 由 list_item_shopping.xml 中的 CheckBox 调用
+     * 由 list_item_shopping.xml 中的 CheckBox 调用
      * 当复选框状态改变时，我们必须更新数据库。
      */
     public void onItemCheckedChanged(ShoppingItem item, boolean isChecked) {

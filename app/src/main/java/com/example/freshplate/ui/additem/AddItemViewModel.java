@@ -38,44 +38,44 @@ public class AddItemViewModel extends AndroidViewModel {
 
 
     // 用于通知 Fragment 导航的 LiveData
-    // (!! 更改) 用于通知 "保存" 或 "取消" 已完成，可以返回上一个界面
+    // 用于通知 "保存" 或 "取消" 已完成，可以返回上一个界面
     private final MutableLiveData<Boolean> _navigateBack = new MutableLiveData<>(false);
     public LiveData<Boolean> getNavigateBackEvent() {
         return _navigateBack;
     }
 
-    // (!! 更改) 用于通知显示日期选择器
+    // 用于通知显示日期选择器
     private final MutableLiveData<Boolean> _showDatePicker = new MutableLiveData<>(false);
     public LiveData<Boolean> getShowDatePickerEvent() {
         return _showDatePicker;
     }
 
-    // (!! 新增) 用于通知启动条码扫描器
+    // 用于通知启动条码扫描器
     private final MutableLiveData<Boolean> _scanBarcode = new MutableLiveData<>(false);
     public LiveData<Boolean> getScanBarcodeEvent() {
         return _scanBarcode;
     }
 
-    // (!! 新增) 用于在保存失败时显示提示 (例如 "请输入名称")
+    // 用于在保存失败时显示提示 (例如 "请输入名称")
     private final MutableLiveData<String> _toastMessage = new MutableLiveData<>();
     public LiveData<String> getToastMessageEvent() {
         return _toastMessage;
     }
 
-    // (!! 新增) 用于显示产品查询加载状态
+    // 用于显示产品查询加载状态
     private final MutableLiveData<Boolean> _isLoadingProduct = new MutableLiveData<>(false);
     public final LiveData<Boolean> isLoadingProduct = _isLoadingProduct;
     public LiveData<Boolean> getIsLoadingProduct() {
         return _isLoadingProduct;
     }
 
-    // (!! 新增) 保存正在编辑的物品的 ID
+    // 保存正在编辑的物品的 ID
     private final MutableLiveData<Integer> itemId = new MutableLiveData<>();
 
-    // (!! 新增) 标记我们是处于添加模式还是编辑模式
+    // 标记我们是处于添加模式还是编辑模式
     private boolean isEditMode = false;
 
-    // (!! 新增) 当处于编辑模式时，从数据库加载物品
+    // 当处于编辑模式时，从数据库加载物品
     // 确保永远不为 null，避免 Fragment 调用 observe 时 NPE
     private LiveData<PantryItem> loadedItem = new MutableLiveData<>(null);
 
@@ -86,7 +86,7 @@ public class AddItemViewModel extends AndroidViewModel {
         this.repository = new PantryRepository(application);
         this.productRepository = new ProductRepository();
 
-        // (!! 关键) Transformations.switchMap
+        // Transformations.switchMap
         // 当 itemId 发生变化时，根据是否为编辑模式选择数据源
         loadedItem = Transformations.switchMap(itemId, id -> {
             if (id != null && id != -1) {
@@ -97,14 +97,14 @@ public class AddItemViewModel extends AndroidViewModel {
         });
     }
 
-    // (!! 新增) 由 AddItemFragment 调用
+    // 由 AddItemFragment 调用
     public void start(int id) {
         // 根据传入的 id 决定是否为编辑模式
         isEditMode = id != -1;
         itemId.setValue(id);
     }
 
-    // (!! 新增) 由 AddItemFragment 调用，用于填充表单
+    // 由 AddItemFragment 调用，用于填充表单
     public LiveData<PantryItem> getLoadedItem() {
         return loadedItem;
     }
@@ -131,7 +131,7 @@ public class AddItemViewModel extends AndroidViewModel {
         int qty;
         try {
             qty = Integer.parseInt(quantityValue.trim());
-            // (!! 关键) 根据模式决定是更新还是插入
+            // 根据模式决定是更新还是插入
             if (isEditMode) {
                 // 我们需要原始的 ID
                 PantryItem itemToUpdate = loadedItem.getValue();
@@ -157,24 +157,24 @@ public class AddItemViewModel extends AndroidViewModel {
         _navigateBack.setValue(true);
     }
 
-    // (!! 更改) 当我们从数据库加载物品时，填充字段
+    // 当我们从数据库加载物品时，填充字段
     public void populateFields(PantryItem item) {
         if (item != null) {
             itemName.setValue(item.name);
             quantity.setValue(String.valueOf(item.quantity));
-            // (!! 关键) 我们必须同时设置 String 和 LocalDate
+            // 我们必须同时设置 String 和 LocalDate
             onDateSelected(item.expirationDate);
             isIngredient.setValue(item.isIngredient);
         }
     }
 
-    // (!! 更改) onDateSelected 现在有两个用途
+    // onDateSelected 现在有两个用途
     public void onDateSelected(LocalDate date) {
         this.selectedExpirationDate = date;
         expirationDateString.setValue(this.selectedExpirationDate.format(dateFormatter));
     }
 
-    // (!! 更改) onDateSelected (来自 DatePicker)
+    // onDateSelected (来自 DatePicker)
     public void onDateSelected(Long selection) {
         Instant instant = Instant.ofEpochMilli(selection);
         LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
@@ -182,7 +182,7 @@ public class AddItemViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 新增) 由 "Cancel" 按钮的 android:onClick 调用
+     * 由 "Cancel" 按钮的 android:onClick 调用
      */
     public void onCancelClicked() {
         // 通知 Fragment 导航回上一个界面
@@ -190,7 +190,7 @@ public class AddItemViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 新增) 由 "Scan Barcode" 按钮的 android:onClick 调用
+     * 由 "Scan Barcode" 按钮的 android:onClick 调用
      */
     public void onScanBarcodeClicked() {
         // 通知 Fragment 启动扫描器
@@ -205,7 +205,7 @@ public class AddItemViewModel extends AndroidViewModel {
     }
 
     /**
-     * (!! 更新) 当条码扫描完成后，由 Fragment 调用
+     * 当条码扫描完成后，由 Fragment 调用
      * @param barcodeResult 扫描到的条码
      */
     public void onBarcodeScanned(String barcodeResult) {

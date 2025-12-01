@@ -2,7 +2,8 @@ package com.example.freshplate.data.model;
 
 // 这个类代表 API 返回的完整食谱详情
 
-import com.google.gson.annotations.SerializedName; // 使用 Gson 来自动解析 API 的 JSON 响应
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import lombok.Getter;
@@ -24,12 +25,11 @@ public class RecipeDetail {
     @SerializedName("readyInMinutes")
     private int cookingTime; // 烹饪时间
 
-    // (!! 关键) 完整的食材列表
-    // 我们可以复用之前的 Ingredient.java
+    // 完整的食材列表
     @SerializedName("extendedIngredients")
     private List<Ingredient> ingredients;
 
-    // (!! 关键) 烹饪步骤
+    // 烹饪步骤
     @SerializedName("analyzedInstructions")
     private List<AnalyzedInstruction> instructions;
 
