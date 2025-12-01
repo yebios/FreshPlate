@@ -89,7 +89,7 @@
 
 <img src="img/Pantry.png" alt="Pantry" style="zoom: 25%;" />
 
-<img src="img/Add item.png" alt="Add item" style="zoom: 25%;" />
+<img src="img/Add Item.png" alt="Add Item" style="zoom: 25%;" />
 
 <img src="img/Recipes.png" alt="Recipes" style="zoom: 25%;" />
 
