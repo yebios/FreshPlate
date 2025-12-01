@@ -87,15 +87,15 @@
 
 ## 📱 Screenshots
 
-<img src="img/Pantry.png" alt="Pantry" style="zoom: 25%;" />
+<img src="img/Pantry.png" alt="Pantry" width="300px;" />
 
-<img src="img/Add Item.png" alt="Add Item" style="zoom: 25%;" />
+<img src="img/Add Item.png" alt="Add Item" width="300px;" />
 
-<img src="img/Recipes.png" alt="Recipes" style="zoom: 25%;" />
+<img src="img/Recipes.png" alt="Recipes" width="300px;" />
 
-<img src="img/ShoppingList.png" alt="ShoppingList" style="zoom: 25%;" />
+<img src="img/ShoppingList.png" alt="ShoppingList" width="300px;" />
 
-<img src="img/Notice.png" alt="Notice" style="zoom: 25%;" />
+<img src="img/Notice.png" alt="Notice" width="300px;" />
 
 ---
 
